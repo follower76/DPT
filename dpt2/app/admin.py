@@ -6,7 +6,7 @@ from .models import Property, Product, ProductProperty, FunctionProperty
 class PropertyAdmin(admin.ModelAdmin):
     list_display = ['version', 'name']
     list_filter = ['version']
-    list_search = ['name',]
+    list_search = ['name', ]
 
 
 class ProductAdmin(admin.ModelAdmin):
