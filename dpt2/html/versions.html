@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Versions</h1>
+{% for version in versions %}
+<a href="/v{{version.id}}">{{version.date}} (v{{version.id}})</a><br />
+{% endfor %}
+{% endblock %}

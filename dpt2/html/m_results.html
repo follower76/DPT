@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<img src="/@@/logo2.png" alt="" style="margin-left:300px;"/>
+{% if user.admin %}
+	{% for poll in polls %}
+		{% if poll.product_a = poll.choice %}({{poll.product_a.oid}}){% else %}{{poll.product_a.oid}}{% endif %}
+		{% if poll.product_b = poll.choice %}({{poll.product_b.oid}}){% else %}{{poll.product_b.oid}}{% endif %}
+		{% if poll.product_c = poll.choice %}({{poll.product_c.oid}}){% else %}{{poll.product_c.oid}}{% endif %}
+		<br />
+	{% endfor %}
+	{% for result in results %}
+		{{result.function.oid}}<br />
+	{% endfor %}
+{% endif %}
+<p class="result">bla bla</p>
+<div id="products-container">
+	<img src="/@@/results.png" alt="" class="product-shelves" />
+	<div class="product-box">
+	{% for product in products %}
+		<div class="product">
+			<img src="/images/{{product.version_id}}/{{product.oid}}r.png" alt="" />
+			{{product.name}}
+		</div>
+	{% endfor %}
+	</div>
+	<div class="clear"></div>
+</div>
+<script type="text/javascript">
+	var index = 0;
+	var pages = new Array(
+	{% for page in pages %}
+		'{% spaceless %}
+		<img src="/@@/results2.png" alt="" class="product-shelves2" />
+		<div class="product-box2">
+		{% for product in page %}
+			<div class="product"><img src="/images/{{product.version_id}}/{{product.oid}}r.png" alt="" />{{product.name|escapejs}}</div>
+		{% endfor %}</div><div class="clear"></div>{% endspaceless %}'{% if not forloop.last %},{% endif %}
+	{% endfor %}
+	);
+	var index = 1;
+	$('#products-container').append(pages[index++]);
+	jQuery(function() {
+		$(window).scroll(function() {
+			if ($(window).scrollTop() > $(document).height() - $(window).height() - 300) {
+				$('#products-container').append(pages[index++]);
+			}
+		});
+	});
+</script>
+<div class="clear"></div>
+{% endblock %}

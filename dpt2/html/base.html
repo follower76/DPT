@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+	<link rel="stylesheet" type="text/css" href="/@@/styles.css" media="screen" />
+	<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet' type='text/css'>
+	<link rel="icon" href="favicon.ico" type="image/x-icon"> 
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
+	<script type="text/javascript" src="/jquery/jquery.min.js"></script>
+	<title></title>
+
+
+</head>
+
+<body>
+	<div id="container">
+		
+		
+
+
+		 {% if request.user.id %}
+			{% if request.user.guest %}
+				<!-- <strong>Guest</strong> !-->
+			{% else %}
+				<div id="account">
+				<strong>{{request.user.first_name}} {{request.user.last_name}}</strong><br>
+			{% endif %}
+		{% else %}
+			<!-- <strong>Guest</strong> !-->
+		{% endif %}
+		{% if 'version' in request.session %}
+			(v{{request.session.version.id}})
+		{% endif %}
+		{% if request.user.admin %}
+			<a href="/import">Import</a>
+			<a href="/versions">Versions</a>
+		{% endif %}
+		{% if not request.user.id or request.user.guest %}
+			<!-- <a href="/login">Log In</a> -->
+			<!-- <a href="/signup">Sign Up</a>
+		-->
+		{% endif %}
+		{% if request.user.id and not request.user.guest %}
+			<a href="/logout">Logout</a>
+			</div>
+		{% endif %}
+	
+
+	<div id="content">
+	{% block content %}{% endblock %}
+		<div class="clear"></div>
+	</div>
+
+
+	</div>
+
+	
+</body>
+</html>

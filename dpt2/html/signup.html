@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Sign Up</h1>
+<form action="/signup" method="post">
+	{% csrf_token %}
+	<div>
+		<!-- <label for="id_first_name">First name</label> -->
+		<input id="id_first_name" name="first_name" value="{{user.first_name}}" />
+	</div>
+	<div>
+		<!--<label for="id_last_name">Last name</label>-->
+		<input id="id_last_name" name="last_name" value="{{user.last_name}}" />
+	</div>
+	<div>
+		<!--<label for="id_email">Email</label>-->
+		<input id="id_email" name="email" value="{{user.email}}" />
+		{% if 'blank-email' in user.errors %}
+			<span class="error">Email can't be blank</span>
+		{% endif %}
+		{% if 'invalid-email' in user.errors %}
+			<span class="error">Incorrect email</span>
+		{% endif %}
+		{% if 'email-exists' in user.errors %}
+			<span class="error">Email has already been taken</span>
+		{% endif %}
+	</div>
+	<div>
+		<!--<label for="id_password">Password</label>-->
+		<input type="password" id="id_password" name="password" />
+		{% if 'blank-password' in user.errors %}
+			<span class="error">Password can't be blank</span>
+		{% endif %}
+		{% if 'weak-password' in user.errors %}
+			<span class="error">Password is too weak</span>
+		{% endif %}
+		{% if 'passwords-dont-match' in user.errors %}
+			<span class="error">Password doesn't match confirmation</span>
+		{% endif %}
+	</div>
+	<div>
+		<!--<label for="id_password2">Password confirmation</label>-->
+		<input type="password" id="id_password2" name="password2" />
+	</div>
+	<div>
+		<input class="button" type="submit" value="Sign Up" />
+	</div>
+</form>
+{% endblock %}

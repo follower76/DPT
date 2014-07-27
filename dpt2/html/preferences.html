@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="pickbox" style="padding-left:30px; font-family: Arial; font-weight: Bold; font-size: 24pt; color:#250d0f;">
+	Touch the choice that best matches what is important to you
+</div>
+
+<div id="prefbox">
+<table>
+	<tr>
+		<td>
+		<form action="/choose" method="post" style="float:left;">
+			{% csrf_token %}
+			<div class="mealbox">
+				<input type="hidden" name="id" value="{{poll.product_a.id}}" />
+				<div style="text-align:center">Choice 1</div>
+				<input type="image" class="picture" src="/@@/stimuli/stimulus{{ poll.product_a.oid|stringformat:"03d" }}.png" alt="{{poll.product_a.name}}"/>
+			</div>
+			
+		</form>
+		</td>
+		<td>
+		<form action="/choose" method="post" style="float:left;">
+			{% csrf_token %}
+			<div class="mealbox">
+				<input type="hidden" name="id" value="{{poll.product_b.id}}" />
+				<div style="text-align:center">Choice 2</div>
+				<input type="image" class="picture" src="/@@/stimuli/stimulus{{ poll.product_b.oid|stringformat:"03d" }}.png" alt="{{poll.product_b.name}}" />
+			</div>
+		</form>
+		</td>
+		<td>
+		<form action="/choose" method="post" style="float:left;">
+			{% csrf_token %}
+			<div class="mealbox">
+				<input type="hidden"  name="id" value="{{poll.product_c.id}}" />
+				<div style="text-align:center">Choice 3</div>
+				<input type="image" class="picture" src="/@@/stimuli/stimulus{{ poll.product_c.oid|stringformat:"03d" }}.png" alt="{{poll.product_c.name}}" />
+			</div>
+		</form>
+		</td>
+	</tr>
+
+</table>
+</div>
+ <div id="progressbar">
+ 	{% if numPolls <= 1 %}
+     <div style="width: 10%"></div>
+	{% endif %}
+	{% if numPolls >= 2 and numPolls <= 8 %}
+     <div style="width: {% widthratio numPolls 9 100 %}%"></div>
+	{% endif %}
+	{% if numPolls > 8 %}
+     <div style="width: 99%"></div>
+	{% endif %}
+	</div>
+<!--
+	<form action="/choose" method="post" style="float:left;">
+		{% csrf_token %}
+		<div>
+			<input type="hidden" name="id" value="{{poll.product_a.id}}" />
+			<input type="image" src="/images/{{poll.product_a.version.id}}/{{poll.product_a.oid}}d.gif" alt="{{poll.product_a.name}}" />
+		</div>
+	</form>
+		</th>
+		<th>
+	<form action="/choose" method="post" style="float:left;">
+		{% csrf_token %}
+		<div>
+			<input type="hidden" name="id" value="{{poll.product_b.id}}" />
+			<input type="image" src="/images/{{poll.product_b.version.id}}/{{poll.product_b.oid}}d.gif" alt="{{poll.product_b.name}}"  />
+		</div>
+	</form>
+		</th>
+		<th>
+	<form action="/choose" method="post" style="float:left;">
+		{% csrf_token %}
+		<div>
+			<input type="hidden" name="id" value="{{poll.product_c.id}}" />
+			<input type="image" src="/images/{{poll.product_c.version.id}}/{{poll.product_c.oid}}d.gif" alt="{{poll.product_c.name}}" />
+		</div>
+	</form>
+-->
+
+
+{% endblock %}

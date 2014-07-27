@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p class="intro"></p>
+
+<div style="background: url(/@@/building.png) no-repeat top center;width:789px;height:545px;margin-left:70px;">
+{% if products.0 %}<img id="img0" src="/images/{{version.id}}/{{products.0.0.oid}}t.png" alt="" style="position:relative;top:272px;left:20px;"/>{% endif %}
+{% if products.1 %}<img id="img1" src="/images/{{version.id}}/{{products.1.0.oid}}t.png" alt="" style="position:relative;top:272px;left:20px;" />{% endif %}
+{% if products.2 %}<img id="img2" src="/images/{{version.id}}/{{products.2.0.oid}}t.png" alt="" style="position:relative;top:272px;left:158px;" />{% endif %}
+{% if products.3 %}<img id="img3" src="/images/{{version.id}}/{{products.3.0.oid}}t.png" alt="" style="position:relative;top:272px;left:158px;" />{% endif %}
+<a href="/start" style="display:block;width:140px;height:250px;position:relative;top:82px;left:307px;"></a>
+<div class="clear"></div>
+</div>
+
+<script type="text/javascript">
+	var products = new Array(
+	{% for group in products %}
+		new Array(
+		{% for product in group %}
+			{{product.oid}}{% if not forloop.last %},{% endif %}
+		{% endfor %}
+		){% if not forloop.last %},{% endif %}
+	{% endfor %}
+	);
+	function rotate_image(group, index) {
+		var img = document.getElementById('img' + group);
+		if (index >= products[group].length)
+			index = 0;
+		img.src = '/images/{{version.id}}/' + products[group][index] + 't.png';
+		window.setTimeout('rotate_image(' + group + ',' + (index + 1) + ')',
+			((Math.floor(Math.random() * 10) + 1) * 500) + 2000);
+	}
+	if (products[0].length) {
+		rotate_image(0, 0);
+		rotate_image(1, 0);
+		rotate_image(2, 0);
+		rotate_image(3, 0);
+	}
+</script>
+{% endblock %}
