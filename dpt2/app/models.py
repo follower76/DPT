@@ -20,7 +20,41 @@ class User(models.Model):
     last_login = models.DateTimeField(auto_now=True)
     admin = models.BooleanField(default=False)
     guest = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=True)
+    def __unicode__(self):
+        return self.full_name()
 
+    class Meta:
+        db_table = 'users'
+
+    def full_name(self):
+        return self.first_name + " " + self.last_name
+
+    def get_full_name(self):
+        return self.fullname
+
+
+    def get_short_name(self):
+        return self.shortname
+
+    @property
+    def is_superuser(self):
+        return self.is_admin
+
+
+    @property
+    def is_staff(self):
+        return self.is_admin
+
+
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+
+    def has_module_perms(self, app_label):
+        return self.is_admin
     def __unicode__(self):
         return self.full_name()
 
