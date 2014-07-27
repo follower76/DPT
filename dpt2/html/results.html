@@ -9,22 +9,18 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-        ['Topic', 'Importance'],
+        ['Topic', 'Importance',{ role: 'style' } ],
 		{% for key, value in importances %}
-		['{{key|safe}}', {{value}}],
+		['{{key|safe}}', {{value}},'color: {% cycle "red" "blue" %}'],
+		
 		{% endfor %}        
         ]);
 		
         var options = {
-		  tooltip: {text: 'percentage'},
-		  sliceVisibilityThreshold:0,
-		  pieSliceText: 'none',
-		  chartArea: {left:5,top:0,width:"100%",height:"100%"},
-		  legend: {position: 'right', alignment: 'center', textStyle: {fontSize: 20}},
-		  is3D: true
+		 
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(data, options);
       }
     </script>
@@ -53,11 +49,11 @@
 
 
 	<div style="font-size: 30pt; padding-left: 40px; padding-top: 10px">Your Priorities</div>
-	<div id="chart_div" style="width: 475px; height: 275px"></div>
+	<div id="chart_div" style="width: 700px; height: 230px"></div>
 
 
 
-<div style="position: absolute; top: 20px; left: 480px; width: 400px; border:5px solid red; padding-left: 25px; padding-top: 10px; padding-bottom: 10px;">
+<div style="position: absolute; top: 20px; left: 730px; width: 400px; border:5px solid red; padding-left: 25px; padding-top: 10px; padding-bottom: 10px;">
 	<div style="text-align: center; font-size: 30pt">Talk to your doctor</div>
 	<div style="font-size: 15pt; padding-top: 15px">
 	{% if topTopic|contains:"Money" %}
@@ -188,11 +184,20 @@
 	</tr>
 	<tr>
 		<td style="width: 50%; padding:15px">
+	    <form action="demo_form.asp" method="get">
+	    Anything else you’d like to discuss: <textarea rows="4" cols="50" style="border:solid 1px orange;"></textarea><br>
+	    <input type="submit" value="Submit">
+</form>
+
 
 		</td>
 		<td style="padding:15px; text-align:right" >
-<a href="https://redcap.urmc.rochester.edu/redcap/surveys/?s=6nK6o2zoto" target="_blank"><img src="/@@/finalQ_red.png"></a>
-
+<!--<a href="https://redcap.urmc.rochester.edu/redcap/surveys/?s=6nK6o2zoto" target="_blank"><img src="/static/finalQ_red.png"></a>-->
+<pre lang="html">
+<input type="image"
+  onClick="window.print()"
+  src="/static/Print.png"/>
+</pre>
 		</td>
 	</tr>
 	</table>
@@ -208,19 +213,19 @@
 		{% for bpv in bestProdValues %}
 			{% if bpv.value == 1.0  and bpv.property.name|contains:"very" %}
 				{% if bpv.property.name|contains:"Money" %}
-					<img src="/@@/very_money.png">
+					<img src="/static/very_money.png">
 				{% endif %}
 				{% if bpv.property.name|contains:"Stress" %}
-					<img src="/@@/very_stress.png">
+					<img src="/static/very_stress.png">
 				{% endif %}
 				{% if bpv.property.name|contains:"Get" %}
-					<img src="/@@/very_get.png">
+					<img src="/static/very_get.png">
 				{% endif %}
 				{% if bpv.property.name|contains:"Food" %}
-					<img src="/@@/very_food.png">
+					<img src="/static/very_food.png">
 				{% endif %}
 				{% if bpv.property.name|contains:"Safety" %}
-					<img src="/@@/very_safety.png">
+					<img src="/static/very_safety.png">
 				{% endif %}
 			{% endif %}
 		{% endfor %}
@@ -234,19 +239,19 @@
 		{% for bpv in bestProdValues %}
 			{% if bpv.value == 1.0  and bpv.property.name|contains:"somewhat" %}
 				{% if bpv.property.name|contains:"Money" %}
-					<img src="/@@/some_money.png">
+					<img src="/static/some_money.png">
 				{% endif %}
 				{% if bpv.property.name|contains:"Stress" %}
-					<img src="/@@/some_stress.png">
+					<img src="/static/some_stress.png">
 				{% endif %}
 				{% if bpv.property.name|contains:"Get" %}
-					<img src="/@@/some_get.png">
+					<img src="/static/some_get.png">
 				{% endif %}
 				{% if bpv.property.name|contains:"Food" %}
-					<img src="/@@/some_food.png">
+					<img src="/static/some_food.png">
 				{% endif %}
 				{% if bpv.property.name|contains:"Safety" %}
-					<img src="/@@/some_safety.png">
+					<img src="/static/some_safety.png">
 				{% endif %}
 			{% endif %}
 		{% endfor %}

@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+{% block content %}
+{% load containsFilter %}
+
+		<!-- amCharts javascript sources -->
+		<script type="text/javascript" src="http://cdn.amcharts.com/lib/3/amcharts.js"></script>
+		<script type="text/javascript" src="http://cdn.amcharts.com/lib/3/serial.js"></script>
+		<script type="text/javascript" src="http://cdn.amcharts.com/lib/3/themes/patterns.js"></script>
+		<script type="text/javascript" src="http://cdn.amcharts.com/lib/3/exporting/amexport.js"></script>
+		<script type="text/javascript" src="http://cdn.amcharts.com/lib/3/exporting/canvg.js"></script>
+		<script type="text/javascript" src="http://cdn.amcharts.com/lib/3/exporting/rgbcolor.js"></script>
+		<script type="text/javascript" src="http://cdn.amcharts.com/lib/3/exporting/filesaver.js"></script>
+
+		<!-- amCharts javascript code -->
+		<script type="text/javascript">
+			AmCharts.makeChart("chartdiv",
+				{
+					"type": "serial",
+					"pathToImages": "http://cdn.amcharts.com/lib/3/images/",
+					"categoryField": "category",
+					"autoMarginOffset": 40,
+					"marginRight": 70,
+					"marginTop": 70,
+					"plotAreaBorderColor": "#B91919",
+					"startDuration": 1,
+					"fontSize": 13,
+					"theme": "patterns",
+					"categoryAxis": {
+						"autoRotateAngle": 0,
+						"autoRotateCount": -42,
+						"gridPosition": "start",
+						"fontSize": -1,
+						"gridCount": 9,
+						"minHorizontalGap": 74,
+						"tickLength": 2
+					},
+					"chartCursor": {},
+					"chartScrollbar": {
+						"autoGridCount": true,
+						"graph": "Not set",
+						"graphType": "smoothedLine",
+						"gridCount": 21,
+						"minimum": -3,
+						"scrollDuration": -5
+					},
+					"trendLines": [],
+					"graphs": [
+						{
+							"balloonText": "[[title]] of [[category]]:[[value]]",
+							"fillAlphas": 0.9,
+							"id": "AmGraph-1",
+							"title": "graph 1",
+							"type": "column",
+							"valueField": "column-1"
+						},
+						{
+							"balloonText": "[[title]] of [[category]]:[[value]]",
+							"fillAlphas": 0.9,
+							"id": "AmGraph-2",
+							"title": "graph 2",
+							"type": "column",
+							"valueField": "column-2"
+						}
+					],
+					"guides": [],
+					"valueAxes": [
+						{
+							"id": "ValueAxis-1",
+							"stackType": "regular",
+							"title": "Percentage"
+						}
+					],
+					"allLabels": [
+						{
+							"align": "center",
+							"id": "Label-1",
+							"rotation": -10.8
+						},
+						{
+							"align": "center",
+							"bold": true,
+							"id": "Label-2"
+						}
+					],
+					"amExport": {},
+					"balloon": {},
+					"titles": [],
+					"dataProvider": [
+					  {% for key, value in importances %}
+					      {
+						  "category": "{{key|safe}}",
+						  "column-1": "{{value}}"
+					      }
+					  {% endfor %}   
+					]
+				}
+			);
+		</script>
+ {% if user.admin %}
+	{% for poll in polls %}
+		{% if poll.product_a == poll.choice %}({{poll.product_a.oid}}){% else %}{{poll.product_a.oid}}{% endif %}
+		{% if poll.product_b == poll.choice %}({{poll.product_b.oid}}){% else %}{{poll.product_b.oid}}{% endif %}
+		{% if poll.product_c == poll.choice %}({{poll.product_c.oid}}){% else %}{{poll.product_c.oid}}{% endif %}
+		<br />
+	{% endfor %}
+	{% for result in results %}
+		{{result.function.oid}},
+	{% endfor %}
+	<br>UF: 
+	{% for key, value in properties.items %}
+		{{key}} : {{value}},
+	{% endfor %}
+	<br>
+	{% for bpv in bestProdValues %}
+		product: {{bpv.product.name}}, property: {{bpv.property.name}}, propertyvalue: {{bpv.value}}, propertyid: {{bpv.property.id}} <br>
+	{% endfor %}
+	<br>
+{% endif %}
+
+
+	<div style="font-size: 30pt; padding-left: 40px; padding-top: 10px">Your Priorities</div>
+
+<div id="chartdiv" style="width:475px; height: 275px; background-color: #FFFFFF;" ></div>
+
+
+<div style="position: absolute; top: 20px; left: 480px; width: 400px; border:5px solid red; padding-left: 25px; padding-top: 10px; padding-bottom: 10px;">
+	<div style="text-align: center; font-size: 30pt">Talk to your doctor</div>
+	<div style="font-size: 15pt; padding-top: 15px">
+	{% if topTopic|contains:"Money" %}
+		I'd like to talk about my worries about money.
+		<br><br>What can I do to save money on my health care?
+		<br><br>Who else can I talk to about money issues?
+	{% endif %}
+	{% if topTopic|contains:"Stress" %}
+		I'd like to talk about how my stress is affecting my Health. 
+		<br><br>What can I do to deal with stress? 
+		<br><br>Who else can I talk to about my stress or emotional worries?
+	{% endif %}
+	{% if topTopic|contains:"Get" %}
+		I'd like to talk about my ability to get around.
+		<br><br>What can I do to get around better?
+		<br><br>Who else can I talk to about getting around?
+	{% endif %}
+	{% if topTopic|contains:"Food" %}
+		I'd like to talk about my concerns about food.
+		<br><br>How can I learn about healthy food options?
+		<br><br>Who else can I talk to about getting or affording healthy foods?
+	{% endif %}
+	{% if topTopic|contains:"Safety" %}
+		I'd like to talk about my worries about violence.
+		<br><br>What can I do to be safer?
+		<br><br>Who else can I talk to about violence and safety?
+	{% endif %}
+	</div>
+</div>
+<div style="width: 900px">
+	<div style="font-size: 30pt; text-align: center; width: 100%; padding: 15px">Others who can help</div>
+	<table style="width: 100%; font-size: 13pt"><tr>
+	{% if topTopic|contains:"Money" %}
+		<td style="width: 50%; padding:15px">
+		Department of Human Services; Coordinated Care Services Inc. (Medicaid, insurance assistance)
+		<br>585-613-7662
+
+		<br><br>Walmart Pharmacy (Prescription Assistance)
+		<br>585-266-2000
+
+
+		</td>
+		<td style="padding:15px">
+		Home Energy Assistance Program (HEAP)
+		<br>1-800-342-3009 or 585-753-6477
+
+		<br><br>Unified Mission (Furniture, kitchen, bedding, and linens)
+		<br>585-235-0350 or 585-733-2930
+
+		</td>
+	{% endif %}
+	{% if topTopic|contains:"Stress" %}
+		<td style="width: 50%; padding:15px">
+		St. Joseph's Neighborhood Center (Counseling & Psychiatric Services)
+		<br>585-325-5260
+
+		<br><br>Monroe County Office of Mental Health 
+		<br>585-275-5151 
+
+
+		</td>
+		<td style="padding:15px">
+		Lifespan Adult Day Services (Day Programs)
+		<br>585-244-8400 Extension 108
+
+		<br><br>Catholic Family Center Mental Health Clinic (Counseling)
+		<br>585-262-7149
+
+		</td>
+	{% endif %}
+	{% if topTopic|contains:"Get" %}
+		<td style="width: 50%; padding:15px">
+		Monroe County Medical Answering Services 
+		<br>585-288-4680 (Medical Transportation)
+		
+		<br><br>Eldersource/TRAC (Transportation Access)
+		<br>585-325-2800
+
+		</td>
+		<td style="padding:15px">
+		Barnard Fire Department (Crutches)
+		<br>585-621-1111 Extension 2
+
+		<br><br>Masonic Temple (wheelchairs, walkers, canes, crutches, etc.)
+		<br>585-671-9730
+		</td>
+	{% endif %}
+	{% if topTopic|contains:"Food" %}
+		<td style="width: 50%; padding:15px">
+		Salvation Army (Food Pantry)
+		<br>585-987-9540
+
+		<br><br>YMCA of Rochester and Monroe County (Emergency Housing Food pantry)
+		<br>585-546-5820
+
+
+		</td>
+		<td style="padding:15px">
+		Department of Human Services (Food Stamps)
+		<br>585-753-6960
+
+		<br><br>Bethesda Church of God in Christ (Food Cupboard)
+		<br>585-546-6067
+
+		</td>
+	{% endif %}
+	{% if topTopic|contains:"Safety" %}
+		<td style="width: 50%; padding:15px">
+		New York State 24-Hour Domestic & Sexual Violence Hotlines (Violence)
+		<br>800-942-6906 English
+		<br>800-942-6908 Spanish
+
+		<br><br>Legal Aid Society of Rochester (Legal Services)
+		<br>585-232-4090
+
+
+		</td>
+		<td style="padding:15px">
+		Lifespan-NY Elder Abuse Coalition (Elder Abuse)
+		<br>585-244-8400
+
+		<br><br>Strong Recovery (Chemical Dependency)
+		<br>585-275-3161
+
+		</td>
+	{% endif %}
+
+	</tr>
+	<tr>
+		<td style="width: 50%; padding:15px">
+	    <form action="demo_form.asp" method="get">
+	    Anything else you’d like to discuss: <textarea rows="4" cols="50" style="border:solid 1px orange;"></textarea><br>
+	    <input type="submit" value="Submit">
+</form>
+
+
+		</td>
+		<td style="padding:15px; text-align:right" >
+<!--<a href="https://redcap.urmc.rochester.edu/redcap/surveys/?s=6nK6o2zoto" target="_blank"><img src="/static/finalQ_red.png"></a>-->
+<pre lang="html">
+<input type="image"
+  onClick="window.print()"
+  src="/static/Print.png"/>
+</pre>
+		</td>
+	</tr>
+	</table>
+	
+</div>
+
+<!--
+<table class="resultTable">
+	<tr style="height: 85px;"><td></td></tr>
+	<tr style="height: 230px;">
+		<td><table style="width: 650px"><tr>
+				<td align="center" width="100%">
+		{% for bpv in bestProdValues %}
+			{% if bpv.value == 1.0  and bpv.property.name|contains:"very" %}
+				{% if bpv.property.name|contains:"Money" %}
+					<img src="/static/very_money.png">
+				{% endif %}
+				{% if bpv.property.name|contains:"Stress" %}
+					<img src="/static/very_stress.png">
+				{% endif %}
+				{% if bpv.property.name|contains:"Get" %}
+					<img src="/static/very_get.png">
+				{% endif %}
+				{% if bpv.property.name|contains:"Food" %}
+					<img src="/static/very_food.png">
+				{% endif %}
+				{% if bpv.property.name|contains:"Safety" %}
+					<img src="/static/very_safety.png">
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+				</td>
+		</tr></table></td></tr>
+	</tr>
+	<tr style="height: 45px;"><td></td></tr>
+	<tr style="height: 190px;">
+		<td><table style="width: 650px"><tr>
+				<td align="center" width="100%">
+		{% for bpv in bestProdValues %}
+			{% if bpv.value == 1.0  and bpv.property.name|contains:"somewhat" %}
+				{% if bpv.property.name|contains:"Money" %}
+					<img src="/static/some_money.png">
+				{% endif %}
+				{% if bpv.property.name|contains:"Stress" %}
+					<img src="/static/some_stress.png">
+				{% endif %}
+				{% if bpv.property.name|contains:"Get" %}
+					<img src="/static/some_get.png">
+				{% endif %}
+				{% if bpv.property.name|contains:"Food" %}
+					<img src="/static/some_food.png">
+				{% endif %}
+				{% if bpv.property.name|contains:"Safety" %}
+					<img src="/static/some_safety.png">
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+				</td>
+		</tr></table></td></tr>
+	</tr>
+</table>
+!-->
+
+
+
+
+
+<div class="clear"></div>
+{% endblock %}

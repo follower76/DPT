@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<img src="/@@/logo2.png" alt="" style="margin-left:300px;"/>
+<img src="/static/logo2.png" alt="" style="margin-left:300px;"/>
 {% if user.admin %}
 	{% for poll in polls %}
 		{% if poll.product_a = poll.choice %}({{poll.product_a.oid}}){% else %}{{poll.product_a.oid}}{% endif %}
@@ -14,7 +14,7 @@
 {% endif %}
 <p class="result">bla bla</p>
 <div id="products-container">
-	<img src="/@@/results.png" alt="" class="product-shelves" />
+	<img src="/static/results.png" alt="" class="product-shelves" />
 	<div class="product-box">
 	{% for product in products %}
 		<div class="product">
@@ -30,7 +30,7 @@
 	var pages = new Array(
 	{% for page in pages %}
 		'{% spaceless %}
-		<img src="/@@/results2.png" alt="" class="product-shelves2" />
+		<img src="/static/results2.png" alt="" class="product-shelves2" />
 		<div class="product-box2">
 		{% for product in page %}
 			<div class="product"><img src="/images/{{product.version_id}}/{{product.oid}}r.png" alt="" />{{product.name|escapejs}}</div>
