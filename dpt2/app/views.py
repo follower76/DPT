@@ -497,23 +497,23 @@ def results(request, page=None):
 
     importances = {}
     if (FoodVery <= 0 and FoodSome <= 0) or rangeFood < (.01 * totalRange):
-        importances['Food (no importance)'] = 0.0
+        importances['Food '] = 0.0
     else:
         importances['Food'] = rangeFood / totalRange
     if (AroundVery <= 0 and AroundSome <= 0) or rangeAround < (.01 * totalRange):
-        importances['Getting Around (no importance)'] = 0.0
+        importances['Getting Around '] = 0.0
     else:
         importances['Getting Around'] = rangeAround / totalRange
     if (MoneyVery <= 0 and MoneySome <= 0) or rangeMoney < (.01 * totalRange):
-        importances['Money (no importance)'] = 0.0
+        importances['Money '] = 0.0
     else:
         importances['Money'] = rangeMoney / totalRange
     if (SafetyVery <= 0 and SafetySome <= 0) or rangeSafety < (.01 * totalRange):
-        importances['Safety (no importance)'] = 0.0
+        importances['Safety'] = 0.0
     else:
         importances['Safety'] = rangeSafety / totalRange
     if (StressVery <= 0 and StressSome <= 0) or rangeStress < (.01 * totalRange):
-        importances['Stress (no importance)'] = 0.0
+        importances['Stress '] = 0.0
     else:
         importances['Stress'] = rangeStress / totalRange
 

@@ -9,14 +9,16 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-        ['Topic', 'Importance',{ role: 'style' } ],
+        ['', '',{ role: 'style' } ],
 		{% for key, value in importances %}
-		['{{key|safe}}', {{value}},'color: {% cycle "red" "blue" %}'],
+		['{{key|safe}}', {{value}},'color: {% cycle "#871B47" "blue" "#76A7FA" "cyan" "#703593"%}'],
 		
 		{% endfor %}        
         ]);
 		
-        var options = {
+        var options = {fontSize: 14,
+
+
 		 
         };
 
@@ -48,12 +50,12 @@
 {% endif %}
 
 
-	<div style="font-size: 30pt; padding-left: 40px; padding-top: 10px">Your Priorities</div>
-	<div id="chart_div" style="width: 700px; height: 230px"></div>
+	<div style="font-size: 30pt; padding-left: 40px; padding-top: 10px">Your Concerns</div>
+	<div id="chart_div" style="width: 650px; height: 230px"></div>
 
 
 
-<div style="position: absolute; top: 20px; left: 730px; width: 400px; border:5px solid red; padding-left: 25px; padding-top: 10px; padding-bottom: 10px;">
+<div style="position: absolute; top: 20px; left: 600px; width: 400px; border:5px solid red; padding-left: 25px; padding-top: 10px; padding-bottom: 10px;">
 	<div style="text-align: center; font-size: 30pt">Talk to your doctor</div>
 	<div style="font-size: 15pt; padding-top: 15px">
 	{% if topTopic|contains:"Money" %}
