@@ -19,6 +19,19 @@ DATABASES = {
     }
 }
 
+
+# DATABASES = {
+#     'default': {
+#         # 'ENGINE': 'django.db.backends.sqlite3',
+#         # 'NAME': os.path.join(DATA_ROOT, 'site.db'),
+#         'ENGINE': 'django.db.backends.mysql',
+#         'HOST': 'localhost',
+#         'NAME': 'dpt',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#     }
+# }
+
 TIME_ZONE = 'UTC'
 DATETIME_FORMAT = 'd/m/Y H:i:s'
 LANGUAGE_CODE = 'en-us'
@@ -63,5 +76,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.messages',
     #'django.contrib.staticfiles',
+    'registration',
     'app',
 )
+
+ACCOUNT_ACTIVATION_DAYS = 666
+REGISTRATION_OPEN = True
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

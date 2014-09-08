@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Property, Product, ProductProperty, FunctionProperty
+from .models import *
 
 
 class PropertyAdmin(admin.ModelAdmin):
@@ -24,3 +24,8 @@ admin.site.register(Property, PropertyAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(FunctionProperty, FunctionPropertyAdmin)
 admin.site.register(ProductProperty)
+admin.site.register(Round)
+admin.site.register(Poll)
+admin.site.register(Result)
+admin.site.register(Version)
+admin.site.register(Restaurant)

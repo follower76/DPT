@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 # from djangotoolbox.Fields import ListField
 import ast
@@ -9,59 +10,57 @@ class Version(models.Model):
 
     class Meta:
         db_table = 'versions'
+        ordering = ['-id']
 
-
-class User(models.Model):
-    email = models.EmailField()
-    password = models.CharField(max_length=64)
-    first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
-    date_joined = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(auto_now=True)
-    admin = models.BooleanField(default=False)
-    guest = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=True)
-
-    def __unicode__(self):
-        return self.full_name()
-
-    class Meta:
-        db_table = 'users'
-
-    def full_name(self):
-        return self.first_name + " " + self.last_name
-
-    def get_full_name(self):
-        return self.fullname
-
-    def get_short_name(self):
-        return self.shortname
-
-    @property
-    def is_superuser(self):
-        return self.is_admin
-
-
-    @property
-
-    def is_staff(self):
-        return self.is_admin
-
-    def is_active(self):
-        return self.is_admin
-
-    def is_admin(self):
-        return self.is_admin
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return self.is_admin
-
-
-
+#
+# class User(models.Model):
+#     email = models.EmailField()
+#     password = models.CharField(max_length=64)
+#     first_name = models.CharField(max_length=64)
+#     last_name = models.CharField(max_length=64)
+#     date_joined = models.DateTimeField(auto_now_add=True)
+#     last_login = models.DateTimeField(auto_now=True)
+#     admin = models.BooleanField(default=False)
+#     guest = models.BooleanField(default=False)
+#     is_active = models.BooleanField(default=True)
+#     is_staff = models.BooleanField(default=True)
+#     is_admin = models.BooleanField(default=True)
+#
+#     def __unicode__(self):
+#         return self.full_name()
+#
+#     class Meta:
+#         db_table = 'users'
+#
+#     def full_name(self):
+#         return self.first_name + " " + self.last_name
+#
+#     def get_full_name(self):
+#         return self.fullname
+#
+#     def get_short_name(self):
+#         return self.shortname
+#
+#     @property
+#     def is_superuser(self):
+#         return self.is_admin
+#
+#
+#     @property
+#
+#     def is_staff(self):
+#         return self.is_admin
+#
+#     def is_active(self):
+#         return self.is_admin
+#
+#     def is_admin(self):
+#         return self.is_admin
+#     def has_perm(self, perm, obj=None):
+#         return self.is_admin
+#
+#     def has_module_perms(self, app_label):
+#         return self.is_admin
 
 class Property(models.Model):
     version = models.ForeignKey(Version, db_index=True)
@@ -198,10 +197,10 @@ class Result(models.Model):
 #        return self.get_db_prep_value(value)
 
 ## Added for adaptive 
-class BigMatrix(models.Model):
-    version = models.ForeignKey(Version, db_index=True)
-    matrix = models.CommaSeparatedIntegerField(max_length=sys.maxint)  #ListField()
-    #matrix_int = eval(matrix)
-    class Meta:
-        db_table = 'matrices'
-	
+# class BigMatrix(models.Model):
+#     version = models.ForeignKey(Version, db_index=True)
+#     matrix = models.CommaSeparatedIntegerField(max_length=sys.maxint)  #ListField()
+#     #matrix_int = eval(matrix)
+#     class Meta:
+#         db_table = 'matrices'
+#

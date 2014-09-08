@@ -1,4 +1,6 @@
+from django.core.urlresolvers import reverse
 from models import *
+from registration.backends.simple.views import RegistrationView
 from shortcuts import render, redirect, render_to_response
 import tempfile
 import subprocess
@@ -12,14 +14,18 @@ import operator
 
 global Big_Matrix
 
+
 def main(request):
     if 'version' in request.session:
         version = request.session['version']
+        print "Taking Version from Session"
     else:
+        print "Taking Version from DB"
         try:
-            version = Version.objects.order_by('-id')[0]
+            version = Version.objects.filter()[0]
         except IndexError:
-            version = None
+            version = Version(date=datetime.datetime.now())
+            version.save()
     a = [[], [], [], []]
     if version:
         products = Product.objects.filter(version=version, selectable=True)
@@ -29,9 +35,9 @@ def main(request):
             a[2].append(products[4 * i + 2])
             a[3].append(products[4 * i + 3])
     products = a
-    global Big_Matrix
+    # global Big_Matrix
     # Big_Matrix = eval(BigMatrix.objects.get(version = version).matrix)
-    Big_Matrix = dpt2Matrix.Big_Matrix
+    # Big_Matrix = dpt2Matrix.Big_Matrix
     # changing to custom page to test- change from main.html to dinestart.html
     return render(request, 'main.html', {'products': products, 'version': version})
 
@@ -238,21 +244,22 @@ def get_meals(BM, rows_eliminated):
 
 def start(request):
     global Big_Matrix
+    print "Starting"
     if 'version' in request.session:
         version = request.session['version']
+        print "Taking Version from Session"
     else:
+        print "Taking Version from DB"
         try:
-            version = Version.objects.order_by('-id')[0]
+            version = Version.objects.filter()[0]
         except IndexError:
-            return redirect('/')
-    if not request.user.id:
-        user = User(guest=True, date_joined=datetime.datetime.now(), last_login=datetime.datetime.now())
-        user.save()
-        request.session["USER_ID"] = user.id
-        return redirect('/start')
+            version = Version(date=datetime.datetime.now())
+            version.save()
+    if not request.user:
+        return redirect(reverse('registration_register'))
     rnd = Round(version=version, user=request.user, date=datetime.datetime.now())
     rnd.save()
-    products = Product.objects.filter(version=version, selectable=True)
+    products = Product.objects.filter(selectable=True)
     (a, b, c) = random.sample(products, 3)
     poll = Poll(round=rnd, product_a=a, product_b=b, product_c=c, date=datetime.datetime.now())
 
@@ -275,7 +282,11 @@ def preferences(request):
     if not polls:
         return redirect('/start')
     poll = polls[0]
-    return render(request, 'preferences.html', {'poll': poll, 'numPolls': len(polls)})
+    polls_count = polls.count()
+    # if polls_count > 9:
+    #     return redirect('/results')
+    # else:
+    return render(request, 'preferences.html', {'poll': poll, 'numPolls': polls_count})
 
 
 def choose(request):
@@ -292,19 +303,20 @@ def choose(request):
     polls = [p for p in Poll.objects.select_related().filter(round=rnd).order_by('-id')]
     if not polls:
         return redirect('/start')
-    poll = polls[0]  #look at last poll
-    poll.choice = Product.objects.get(id=request.POST['id'])  #id of product just picked
-    poll.save()  #save the choices they just made
+    poll = polls[0]  # look at last poll
+    poll.choice = Product.objects.get(id=request.POST['id'])  # id of product just picked
+    poll.save()  # save the choices they just made
 
-    polls.reverse()  #polls in order from oldest to newest
-    choices = []  #fill with every choice that the person has made thus far (REINER-you could eliminate winners bc no more info can be gleaned
+    polls.reverse()  # polls in order from oldest to newest
+    choices = []  # fill with every choice that the person has made thus far
+                  # (REINER-you could eliminate winners bc no more info can be gleaned
     ordered_choices = []
     for poll in polls:
         for p in [poll.product_a, poll.product_b, poll.product_c]:
             if not p in choices:
                 choices.append(p)
         not_selected = [p for p in [poll.product_a, poll.product_b, poll.product_c] if p != poll.choice]
-        ordered_choices.append([poll.choice, not_selected[0]])  #(one chose, one not chose)
+        ordered_choices.append([poll.choice, not_selected[0]])  # (one chose, one not chose)
         ordered_choices.append([poll.choice, not_selected[1]])
 
     property_ids = [x.id for x in Property.objects.filter(version=version)]
@@ -313,7 +325,7 @@ def choose(request):
         'function_id', 'property_id', 'value')
     f_properties = {}
     for fid in function_ids:
-        f_properties[fid] = {}  #coefficients
+        f_properties[fid] = {}  # coefficients
     for p in function_properties:
         f_properties[p[0]][p[1]] = p[2]
 
@@ -328,18 +340,22 @@ def choose(request):
 
     #print >>sys.stderr, 'at Line 294'
     last_bad_functions = []
-    bad_functions = []  #go thu all UF and see if one of those pairs is violated
+    bad_functions = []  # go thu all UF and see if one of those pairs is violated
     ### bad functions always gets created??
     for listing in ordered_choices:
-        #print listing
+        print "listing", listing
         if len(ordered_choices) > 2 and listing == ordered_choices[-2]:
-            last_bad_functions = [x for x in bad_functions]  #if every UF has been violated then revert to last state
+            last_bad_functions = [x for x in bad_functions]  # if every UF has been violated then revert to last state
         for function_id in function_ids:
             score_listing = []
             for product in listing:
                 score = 0
+                print "fddgdg", p_coefficients[product.id]
                 for property_id in property_ids:
-                    score += f_properties[function_id][property_id] * p_coefficients[product.id][property_id]
+                    try:
+                        score += f_properties[function_id][property_id] * p_coefficients[product.id][property_id]
+                    except KeyError:
+                        print "KeyError"
                 score_listing.append(score)
             if score_listing[0] < score_listing[1]:
                 if not function_id in bad_functions:
@@ -349,17 +365,23 @@ def choose(request):
 
     #print >>sys.stderr, 'at Line 316'
     finals = []
+    print function_ids, bad_functions, last_bad_functions
     if len(function_ids) - len(bad_functions) == 1:
         finals = [f for f in function_ids if f not in bad_functions]
+        print finals
     if len(function_ids) == len(bad_functions):
         finals = [f for f in function_ids if f not in last_bad_functions]
+        print finals
     if len(bad_functions) == len(last_bad_functions):
         finals = [f for f in function_ids if f not in last_bad_functions]
+        print finals
     if finals:
         for final in finals:
             result = Result(round=rnd, function_id=final)
             result.save()
         return redirect('/results')
+    else:
+        print "QQQQQQQQwqwq"
 
     if use_random == 1:
         used = []
@@ -401,7 +423,7 @@ def results(request, page=None):
             return redirect('/')
     rnd = Round.objects.filter(user=request.user).order_by('-id')[0]
     results = Result.objects.filter(round=rnd)
-
+    print "Results ", results
     property_ids = [x.id for x in Property.objects.filter(version=version)]
     function_ids = [r.function_id for r in results]
     function_properties = FunctionProperty.objects.select_related().filter(function__id__in=function_ids).values_list(
@@ -411,8 +433,10 @@ def results(request, page=None):
         properties[p] = 0
     for p in function_properties:
         properties[p[1]] += p[2]
+    print "Properties ", properties
     for i in properties.keys():
-        properties[i] /= len(function_ids)
+        properties[i] /= len(function_ids) or 1
+
 
     products = Product.objects.filter(version=version)
     product_properties = ProductProperty.objects.select_related().filter(product__in=products).values_list('product_id',
@@ -427,7 +451,7 @@ def results(request, page=None):
         p_coefficients[c[0]][c[1]] = c[2]
     #print c
 
-    allProps = Property.objects.filter(version=version, id=133)
+    allProps = Property.objects.filter(version=version)
 
     myStr = 'allProps is ('
     for pr in allProps:
@@ -438,7 +462,10 @@ def results(request, page=None):
     for product in products:
         score = 0
         for property_id in property_ids:
-            score += properties[property_id] * p_coefficients[product['id']][property_id]
+            try:
+                score += properties[property_id] * p_coefficients[product['id']][property_id]
+            except KeyError:
+                print "KeyError"
         product['score'] = score
     products = sorted(products, key=lambda k: k['score'])
     products.reverse()
@@ -548,3 +575,17 @@ def results(request, page=None):
     return render(request, 'results.html',
                   {'results': results, 'products': products, 'polls': polls, 'pages': pages, 'properties': properties,
                    'property_ids': property_ids, 'topTopic': importances[0][0], 'importances': importances})
+
+
+class CustomRegistrationView(RegistrationView):
+    """
+    A registration backend which implements the simplest possible
+    workflow: a user supplies a username, email address and password
+    (the bare minimum for a useful account), and is immediately signed
+    up and logged in).
+
+    """
+
+
+    def get_success_url(self, request, user):
+        return reverse('start')

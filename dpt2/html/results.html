@@ -186,10 +186,14 @@
 	</tr>
 	<tr>
 		<td style="width: 50%; padding:15px">
-	    <form action="demo_form.asp" method="get">
-	    Anything else you’d like to discuss: <textarea rows="4" cols="50" style="border:solid 1px orange;"></textarea><br>
-	    <input type="submit" value="Submit">
-</form>
+            <form action="" id="comment_form" method="get">
+                Anything else you’d like to discuss:
+                <input type="text" id="comment_name" style="border:solid 1px orange;" placeholder="Your name"/>
+                <textarea placeholder="Enter comment" id="comment_text" rows="4" cols="50"
+                                                               style="border:solid 1px orange;"></textarea><br>
+                <input type="button" id="comment" value="Submit">
+            </form>
+            <div id="comment_results"></div>
 
 
 		</td>
