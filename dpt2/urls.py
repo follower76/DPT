@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from dpt2.app.views import CustomRegistrationView
+from app.views import CustomRegistrationView
 import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin

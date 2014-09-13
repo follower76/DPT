@@ -26,10 +26,9 @@ DATABASES = {
         # 'NAME': os.path.join(DATA_ROOT, 'site.db'),
         'ENGINE': 'django.db.backends.mysql',
         'HOST': 'localhost',
-        'NAME': 'dpt',
+        'NAME': 'snackpref',
         'USER': 'root',
-        'PASSWORD': '',
-        # 'PASSWORD': 'd2TEJG4q',
+        'PASSWORD': 'd2TEJG4q',
     }
 }
 
