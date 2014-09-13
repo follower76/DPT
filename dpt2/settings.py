@@ -7,30 +7,31 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = ['test@example.com']
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(DATA_ROOT, 'site.db'),
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'HOST': 'localhost',
-        #		'NAME': 'snackpref',
-        'USER': 'snackpref',
-        'PASSWORD': 'snackpref',
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
-#         # 'ENGINE': 'django.db.backends.sqlite3',
-#         # 'NAME': os.path.join(DATA_ROOT, 'site.db'),
-#         'ENGINE': 'django.db.backends.mysql',
-#         'HOST': 'localhost',
-#         'NAME': 'dpt',
-#         'USER': 'root',
-#         'PASSWORD': '',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(DATA_ROOT, 'site.db'),
+#         # 'ENGINE': 'django.db.backends.mysql',
+#         # 'HOST': 'localhost',
+#         #		'NAME': 'snackpref',
+#         'USER': 'snackpref',
+#         'PASSWORD': 'snackpref',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(DATA_ROOT, 'site.db'),
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'localhost',
+        'NAME': 'dpt',
+        'USER': 'root',
+        'PASSWORD': '',
+        # 'PASSWORD': 'd2TEJG4q',
+    }
+}
 
 TIME_ZONE = 'UTC'
 DATETIME_FORMAT = 'd/m/Y H:i:s'

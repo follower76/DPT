@@ -10,7 +10,7 @@ class Version(models.Model):
 
     class Meta:
         db_table = 'versions'
-        ordering = ['-id']
+        ordering = []
 
 #
 # class User(models.Model):

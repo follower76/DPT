@@ -546,5 +546,7 @@ p.intro {
 	margin: 0 auto;
 }
 
-*/
+input[type=text], input[type=password], textarea{
+    border: 1px solid orange;
+}
 

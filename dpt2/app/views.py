@@ -16,6 +16,8 @@ global Big_Matrix
 
 
 def main(request):
+    if not request.user.is_authenticated():
+        return redirect(reverse('registration_register'))
     if 'version' in request.session:
         version = request.session['version']
         print "Taking Version from Session"
@@ -244,6 +246,8 @@ def get_meals(BM, rows_eliminated):
 
 def start(request):
     global Big_Matrix
+    if not request.user.is_authenticated():
+        return redirect(reverse('registration_register'))
     print "Starting"
     if 'version' in request.session:
         version = request.session['version']
@@ -255,8 +259,6 @@ def start(request):
         except IndexError:
             version = Version(date=datetime.datetime.now())
             version.save()
-    if not request.user:
-        return redirect(reverse('registration_register'))
     rnd = Round(version=version, user=request.user, date=datetime.datetime.now())
     rnd.save()
     products = Product.objects.filter(selectable=True)
@@ -283,9 +285,7 @@ def preferences(request):
         return redirect('/start')
     poll = polls[0]
     polls_count = polls.count()
-    # if polls_count > 9:
-    #     return redirect('/results')
-    # else:
+    print "polls count", polls_count
     return render(request, 'preferences.html', {'poll': poll, 'numPolls': polls_count})
 
 
@@ -332,6 +332,7 @@ def choose(request):
     product_properties = ProductProperty.objects.select_related().filter(product__in=choices).values_list('product_id',
                                                                                                           'property_id',
                                                                                                           'value')
+    print "product properties", product_properties
     p_coefficients = {}
     for p in choices:
         p_coefficients[p.id] = {}
@@ -350,11 +351,11 @@ def choose(request):
             score_listing = []
             for product in listing:
                 score = 0
-                print "fddgdg", p_coefficients[product.id]
+                # print "fddgdg", p_coefficients[product.id]
                 for property_id in property_ids:
                     try:
                         score += f_properties[function_id][property_id] * p_coefficients[product.id][property_id]
-                    except KeyError:
+                    except (KeyError, AttributeError):
                         print "KeyError"
                 score_listing.append(score)
             if score_listing[0] < score_listing[1]:
@@ -381,7 +382,7 @@ def choose(request):
             result.save()
         return redirect('/results')
     else:
-        print "QQQQQQQQwqwq"
+        print "No finals"
 
     if use_random == 1:
         used = []
@@ -431,8 +432,12 @@ def results(request, page=None):
     properties = {}
     for p in property_ids:
         properties[p] = 0
+    print "Funciton Properties ", function_properties
     for p in function_properties:
-        properties[p[1]] += p[2]
+        try:
+            properties[p[1]] += p[2]
+        except KeyError:
+            pass
     print "Properties ", properties
     for i in properties.keys():
         properties[i] /= len(function_ids) or 1
