@@ -18,16 +18,16 @@ global Big_Matrix
 def main(request):
     if not request.user.is_authenticated():
         return redirect(reverse('registration_register'))
-    if 'version' in request.session:
-        version = request.session['version']
-        print "Taking Version from Session"
-    else:
-        print "Taking Version from DB"
-        try:
-            version = Version.objects.filter()[0]
-        except IndexError:
-            version = Version(date=datetime.datetime.now())
-            version.save()
+    # if 'version' in request.session:
+    #     version = request.session['version']
+    #     print "Taking Version from Session"
+    # else:
+    #     print "Taking Version from DB"
+    try:
+        version = Version.objects.filter()[0]
+    except IndexError:
+        version = Version(date=datetime.datetime.now())
+        version.save()
     a = [[], [], [], []]
     if version:
         products = Product.objects.filter(version=version, selectable=True)
@@ -64,13 +64,13 @@ def my_foodie(request):  #reinier
 #	return render(request, 'my_foodie.html', {'versions': versions})
 
 def random_meal(request):  #reinier
-    if 'version' in request.session:
-        version = request.session['version']
-    else:
-        try:
-            version = Version.objects.order_by('-id')[0]
-        except IndexError:
-            return redirect('/')
+    # if 'version' in request.session:
+    #     version = request.session['version']
+    # else:
+    try:
+        version = Version.objects.order_by('-id')[0]
+    except IndexError:
+        return redirect('/')
     products = Product.objects.filter(version=version)
     output = len(products)
     random_num = random.randint(1, len(products) - 1)
@@ -248,17 +248,14 @@ def start(request):
     global Big_Matrix
     if not request.user.is_authenticated():
         return redirect(reverse('registration_register'))
-    print "Starting"
-    if 'version' in request.session:
-        version = request.session['version']
-        print "Taking Version from Session"
-    else:
-        print "Taking Version from DB"
-        try:
-            version = Version.objects.filter()[0]
-        except IndexError:
-            version = Version(date=datetime.datetime.now())
-            version.save()
+    # if 'version' in request.session:
+    #     version = request.session['version']
+    # else:
+    try:
+        version = Version.objects.order_by('-id')[0]
+    except IndexError:
+        version = Version(date=datetime.datetime.now())
+        version.save()
     rnd = Round(version=version, user=request.user, date=datetime.datetime.now())
     rnd.save()
     products = Product.objects.filter(selectable=True)
@@ -290,13 +287,13 @@ def preferences(request):
 
 
 def choose(request):
-    if 'version' in request.session:
-        version = request.session['version']
-    else:
-        try:
-            version = Version.objects.order_by('-id')[0]
-        except IndexError:
-            return redirect('/')
+    # if 'version' in request.session:
+    #     version = request.session['version']
+    # else:
+    try:
+        version = Version.objects.order_by('-id')[0]
+    except IndexError:
+        return redirect('/')
     rnd = Round.objects.filter(user=request.user).order_by('-id')[0]
     use_random = 1
     #print >>sys.stderr, 'at Line 260'
@@ -332,14 +329,13 @@ def choose(request):
     product_properties = ProductProperty.objects.select_related().filter(product__in=choices).values_list('product_id',
                                                                                                           'property_id',
                                                                                                           'value')
-    print "product properties", product_properties
+
     p_coefficients = {}
     for p in choices:
         p_coefficients[p.id] = {}
     for c in product_properties:
         p_coefficients[c[0]][c[1]] = c[2]
 
-    #print >>sys.stderr, 'at Line 294'
     last_bad_functions = []
     bad_functions = []  # go thu all UF and see if one of those pairs is violated
     ### bad functions always gets created??
@@ -351,7 +347,6 @@ def choose(request):
             score_listing = []
             for product in listing:
                 score = 0
-                # print "fddgdg", p_coefficients[product.id]
                 for property_id in property_ids:
                     try:
                         score += f_properties[function_id][property_id] * p_coefficients[product.id][property_id]
@@ -415,16 +410,15 @@ def choose(request):
 
 
 def results(request, page=None):
-    if 'version' in request.session:
-        version = request.session['version']
-    else:
-        try:
-            version = Version.objects.order_by('-id')[0]
-        except IndexError:
-            return redirect('/')
+    # if 'version' in request.session:
+    #     version = request.session['version']
+    # else:
+    try:
+        version = Version.objects.order_by('-id')[0]
+    except IndexError:
+        return redirect('/')
     rnd = Round.objects.filter(user=request.user).order_by('-id')[0]
     results = Result.objects.filter(round=rnd)
-    print "Results ", results
     property_ids = [x.id for x in Property.objects.filter(version=version)]
     function_ids = [r.function_id for r in results]
     function_properties = FunctionProperty.objects.select_related().filter(function__id__in=function_ids).values_list(
@@ -432,13 +426,13 @@ def results(request, page=None):
     properties = {}
     for p in property_ids:
         properties[p] = 0
-    print "Funciton Properties ", function_properties
+
     for p in function_properties:
         try:
             properties[p[1]] += p[2]
         except KeyError:
             pass
-    print "Properties ", properties
+
     for i in properties.keys():
         properties[i] /= len(function_ids) or 1
 
@@ -549,13 +543,7 @@ def results(request, page=None):
     else:
         importances['Stress'] = rangeStress / totalRange
 
-    print 'importances: ' + str(importances)
-
     importances = sorted(importances.iteritems(), key=operator.itemgetter(1), reverse=True)
-
-    print 'importances: ' + str(importances)
-
-    print 'top topic: ' + str(importances[0][0])
 
     bestProduct = Product.objects.filter(version=version, oid=products[0]['oid'])
 
@@ -577,6 +565,10 @@ def results(request, page=None):
     products = products[:8]
 
     polls = Poll.objects.filter(round=rnd)
+    GraphData.objects.get_or_create(
+        user=request.user,
+        data=json.dumps(importances),
+    )
     return render(request, 'results.html',
                   {'results': results, 'products': products, 'polls': polls, 'pages': pages, 'properties': properties,
                    'property_ids': property_ids, 'topTopic': importances[0][0], 'importances': importances})

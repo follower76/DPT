@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.models import User
 from django.db import models
 # from djangotoolbox.Fields import ListField
@@ -169,6 +170,16 @@ class Result(models.Model):
     class Meta:
         db_table = 'results'
 
+
+class GraphData(models.Model):
+    user = models.ForeignKey(User, null=False, blank=False)
+    data = models.TextField(max_length=10000, null=False, blank=False)
+    created = models.DateTimeField(auto_now_add=True, auto_created=True)
+
+    def data_json(self):
+        features = json.loads(self.data)
+        features = {k: v for k, v in features.iteritems()}
+        return features
 
 #class ListField(models.TextField):
 #    __metaclass__ = models.SubfieldBase

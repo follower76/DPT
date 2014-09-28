@@ -1,10 +1,7 @@
 from django.conf.urls.defaults import *
 from dpt2.app.views import CustomRegistrationView
-import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
-from django.views.generic.edit import CreateView
-from django.contrib.auth.forms import UserCreationForm
 
 admin.autodiscover()
 urlpatterns = patterns('',
@@ -37,7 +34,4 @@ urlpatterns = patterns('',
                        url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
                        # (r'^accounts/', include('registration.backends.simple.urls')),
 )
-if settings.DEBUG:
-    urlpatterns += patterns('',
-                            (r'^static/(.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-    )
+urlpatterns += staticfiles_urlpatterns()

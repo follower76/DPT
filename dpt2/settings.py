@@ -38,8 +38,11 @@ DATETIME_FORMAT = 'd/m/Y H:i:s'
 LANGUAGE_CODE = 'en-us'
 USE_I18N = False
 USE_L10N = False
-STATIC_ROOT = ROOT + '/static'
+# STATIC_ROOT = ROOT + '/static'
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    ROOT + '/static',
+)
 DROPBOX_ROOT = '/home/yummysnack/snackpref-data/40 Meals & Restaurant Logos'
 ADMIN_MEDIA_PREFIX = '/admin/media/'
 #STATICFILES_DIRS = (os.path.join(ROOT, 'static'),)
@@ -61,6 +64,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'app.middleware.DefaultUserMiddleware',
     # 'disable_csrf.disableCSRF',
 )
 
@@ -76,7 +80,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
     'django.contrib.messages',
-    #'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'registration',
     'app',
 )
@@ -84,4 +88,4 @@ INSTALLED_APPS = (
 ACCOUNT_ACTIVATION_DAYS = 666
 REGISTRATION_OPEN = True
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'

@@ -287,7 +287,9 @@ div#content {
 a:link,
 a:visited {
 	color: #FFB554;
-	text-decoration:none;	
+	text-decoration:none;
+    float: left;
+    width: 100%;
 	}
 
 a:hover,
