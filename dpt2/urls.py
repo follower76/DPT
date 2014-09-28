@@ -35,3 +35,4 @@ urlpatterns = patterns('',
                        # (r'^accounts/', include('registration.backends.simple.urls')),
 )
 urlpatterns += staticfiles_urlpatterns()
+
